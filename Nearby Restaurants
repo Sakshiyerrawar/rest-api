@@ -1,0 +1,30 @@
+from flask import Flask, request, jsonify
+
+app = Flask(_name_)
+restaurants = [
+    {"name": "Restaurant A", "latitude": 40.7128, "longitude": -74.0060},
+    {"name": "Restaurant B", "latitude": 40.7306, "longitude": -73.9352},
+    {"name": "Restaurant C", "latitude": 40.7397, "longitude": -74.0020}
+]
+
+@app.route('/restaurants_nearby', methods=['GET'])
+def restaurants_nearby():
+    # Retrieve query parameters
+    latitude = float(request.args.get('latitude'))
+    longitude = float(request.args.get('longitude'))
+    miles = float(request.args.get('miles'))
+
+    nearby_restaurants = []
+    for restaurant in restaurants:
+        distance = calculate_distance(latitude, longitude, restaurant['latitude'], restaurant['longitude'])
+        if distance <= miles:
+            nearby_restaurants.append(restaurant)
+
+    return jsonify(nearby_restaurants)
+
+def calculate_distance(lat1, lon1, lat2, lon2):
+    distance = ((lat1 - lat2)*2 + (lon1 - lon2)*2) ** 0.5
+    return distance
+
+if _name_ == '_main_':
+    app.run(debug=True)
